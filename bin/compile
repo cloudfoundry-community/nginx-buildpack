@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# ------------------------------------------------------------------------------------------------
+# Copyright 2013 Jordon Bedwell.
+# Apache License.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+# except  in compliance with the License. You may obtain a copy of the License at:
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the
+# License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and  limitations under the License.
+# ------------------------------------------------------------------------------------------------
+
+shopt -s dotglob
+set -e
+
+# ------------------------------------------------------------------------------------------------
+
+compile_nginx_download=https://d35wldypfbhn1h.cloudfront.net/nginx-1.2.8.tar.gz
+
+# ------------------------------------------------------------------------------------------------
+
+compile_build_dir=$1
+compile_cache_dir=$2
+compile_buildpack_bin=$(dirname $0)
+compile_buildpack_dir=$(cd $(dirname $0) && cd .. && pwd)
+
+# ------------------------------------------------------------------------------------------------
+
+cd $compile_build_dir
+
+# ------------------------------------------------------------------------------------------------
+
+echo "-----> Doing work with $(basename ${compile_nginx_download%.tar.gz}) son."
+mkdir -p $compile_cache_dir/public
+mv * $compile_cache_dir/public
+mv $compile_cache_dir/public .
+[[ -f public/Procfile ]] && mv public/Procfile .
+curl -s --max-time 20 $compile_nginx_download |tar xz
+[[ -f public/nginx.conf ]] && mv public/nginx.conf nginx/conf/nginx.conf
+[[ -f public/mime.types ]] && mv public/mime.types nginx/conf/mime.types
+
+# ------------------------------------------------------------------------------------------------
+
+rm -rf $CACHE_DIR
+cp $compile_buildpack_bin/boot.sh .
+
+# ------------------------------------------------------------------------------------------------

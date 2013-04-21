@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+
+# ------------------------------------------------------------------------------------------------
+# Copyright 2013 Jordon Bedwell.
+# Apache License.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+# except  in compliance with the License. You may obtain a copy of the License at:
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the
+# License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and  limitations under the License.
+# ------------------------------------------------------------------------------------------------
+
+buildpack_root=$PWD
+
+# ------------------------------------------------------------------------------------------------
+
+buildpack_pcre_version=8.32
+buildpack_pcre_url=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
+buildpack_pcre_download=$buildpack_pcre_url/pcre-$buildpack_pcre_version.tar.gz
+
+# ------------------------------------------------------------------------------------------------
+
+buildpack_nginx_url=http://nginx.org/download
+buildpack_nginx_version=1.2.8
+buildpack_nginx_build_flags=(
+  --with-http_gzip_static_module
+  --with-http_realip_module
+  --without-mail_pop3_module
+  --without-mail_imap_module
+  --without-mail_smtp_module
+  --without-http_ssi_module
+  --without-http_userid_module
+  --without-http_auth_basic_module
+  --without-http_split_clients_module
+  --without-http_fastcgi_module
+  --without-http_uwsgi_module
+  --without-http_scgi_module
+  --without-http_memcached_module
+  --without-http_limit_conn_module
+  --without-http_limit_req_module
+  --without-http_empty_gif_module
+  --prefix=/app/nginx
+  --with-pcre=./pcre-$buildpack_pcre_version
+)
+
+buildpack_nginx_download=$buildpack_nginx_url/nginx-$buildpack_nginx_version.tar.gz
+
+# ------------------------------------------------------------------------------------------------
+# The build line that goes into -c of vulcan build
+# ------------------------------------------------------------------------------------------------
+
+buildpack_build_line=(
+  "rm -rf /app/nginx && mkdir /app/nginx &&"
+  "./configure ${buildpack_nginx_build_flags[*]} && make install"
+)
+
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_exit()
+{
+  echo $1
+  exit $2 || 1
+}
+
+# ------------------------------------------------------------------------------------------------
+# $~: heroku-buildpack download
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_download()
+{
+  nginx=$(basename ${buildpack_nginx_download%.tar.gz})
+  mkdir -p $buildpack_root/sources
+  cd $buildpack_root/sources
+
+  if curl -s $buildpack_nginx_download |tar xzv
+  then
+    # Puts PCRE into the NGINX folder so it uploads yo.
+    curl -s $buildpack_pcre_download |tar xzv -C $nginx
+  fi
+}
+
+# ------------------------------------------------------------------------------------------------
+# $~: heroku-buildpack build
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_build()
+{
+  nginx=$(basename ${buildpack_nginx_download%.tar.gz})
+  vulcan build -v \
+    -s $buildpack_root/sources/$nginx \
+    -p /app/nginx \
+    -c "${buildpack_build_line[*]}" || buildpack_exit "No"
+  mv /tmp/${nginx%.*}.tgz $buildpack_root/builds/$nginx.tar.gz
+  echo "You should probably run 'support/heroku-buildpack setup' to clean the build."
+}
+
+# ------------------------------------------------------------------------------------------------
+# $~: heroku-buildpack setup
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_setup()
+{
+  nginx=$(basename ${buildpack_nginx_download%.tar.gz})
+  mkdir -p $buildpack_root/builds
+  cd $buildpack_root/builds
+
+  [[ -f $nginx.tar.gz ]] || buildpack_exit "No" && mkdir -p $nginx
+
+  tar xmzvf $nginx.tar.gz -C $nginx
+  chmod -R uog+rx $nginx/sbin
+  rm -rf $nginx/html
+  rm -rf $nginx/conf
+  rm -rf $nginx/logs
+  cp -R $buildpack_root/conf $nginx
+  cp -R $buildpack_root/logs $nginx
+  tar czvf $nginx.tar.gz $nginx --transform s/^$nginx/nginx/ --owner=0 --group=0 && rm -rf $nginx
+}
+
+# ------------------------------------------------------------------------------------------------
+# $~: heroku-buildpack cleanup
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_cleanup()
+{
+  rm -rf $buildpack_root/builds && rm -rf $buildpack_root/sources
+  mkdir  $buildpack_root/builds && mkdir  $buildpack_root/sources
+}
+
+# ------------------------------------------------------------------------------------------------
+
+case "$1" in
+  cleanup) buildpack_cleanup;;
+  setup) buildpack_setup;;
+  build) buildpack_build;;
+  download) buildpack_download;;
+  run) buildpack_cleanup && buildpack_download && buildpack_build && buildpack_setup;;
+esac
+
+# ------------------------------------------------------------------------------------------------

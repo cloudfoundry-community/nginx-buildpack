@@ -1,0 +1,2 @@
+PATH="${PWD}/support:${PATH}"
+rvm use 1.9.3@vulcan --create
