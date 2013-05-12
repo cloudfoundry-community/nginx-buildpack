@@ -1,16 +1,16 @@
-#A buildpack and vulcan builder for Nginx on Heroku.
+#A buildpack and vulcan builder for Nginx.
 
 ## Building binaries
 
 ```
 cd <buildpack-dir>
-support/heroku-buildpack download
-support/heroku-buildpack build
-support/heroku-buildpack setup
+support/heroku-buildpack run
 ```
+
 * `download` - *pulls the sources from Nginx and PCRE.*
 * `cleanup` - *cleans up both builds and sources.*
 * `build` - *initiates a vulcan build on Heroku.*
+* `run` - *Runs everything in one clean shot for you.*
 * `setup` - *removes html and copies conf and logs to builds/nginx.*
 
 *The equivs exist inside of `rake` too which will invoke `support/heroku-buildpack`.*<br>
@@ -20,5 +20,5 @@ support/heroku-buildpack setup
 ## Using this buildpack as is
 
 ```
-heroku confi:add BUILDPACK_URL=https://github.com/envygeeks/heroku-nginx-buildpack.git
+heroku config:add BUILDPACK_URL=https://github.com/envygeeks/heroku-nginx-buildpack.git
 ```
