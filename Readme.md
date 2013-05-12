@@ -22,3 +22,9 @@ support/heroku-buildpack run
 ```
 heroku config:add BUILDPACK_URL=https://github.com/envygeeks/heroku-nginx-buildpack.git
 ```
+
+## Custom configuration files
+
+This buildpack supports a custom configuration file by just adding `nginx.conf` to the `public` folder.
+If it detects said file it will use it in place of the built-in nginx.conf and run it through the
+same erb processor.  For an example of the most basic `nginx.conf` please view `conf/nginx.conf`
