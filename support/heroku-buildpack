@@ -94,6 +94,7 @@ function buildpack_build()
     -s $buildpack_root/sources/$nginx \
     -p /app/nginx \
     -c "${buildpack_build_line[*]}" || buildpack_exit "No"
+  mkdir -p $buildpack_root/builds
   mv /tmp/${nginx%.*}.tgz $buildpack_root/builds/$nginx.tar.gz
   echo "You should probably run 'support/heroku-buildpack setup' to clean the build."
 }
