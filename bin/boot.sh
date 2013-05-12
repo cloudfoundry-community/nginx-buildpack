@@ -18,7 +18,7 @@ then
   conf_file=/app/public/nginx.conf
 fi
 
-mv conf_file /app/nginx/conf/orig.conf
+mv $conf_file /app/nginx/conf/orig.conf
 erb /app/nginx/conf/orig.conf > /app/nginx/conf/nginx.conf
 
 # ------------------------------------------------------------------------------------------------
