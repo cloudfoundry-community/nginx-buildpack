@@ -20,7 +20,7 @@ set -e
 
 # ------------------------------------------------------------------------------------------------
 
-compile_nginx_download=https://d35wldypfbhn1h.cloudfront.net/nginx-1.2.8.tar.gz
+compile_nginx_download=https://d35wldypfbhn1h.cloudfront.net/nginx-1.4.1.tar.gz
 
 # ------------------------------------------------------------------------------------------------
 
