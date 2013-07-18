@@ -34,6 +34,7 @@ echo "compile_build_dir: $compile_build_dir"
 echo "compile_cache_dir: $compile_cache_dir"
 echo "compile_buildpack_bin: $compile_buildpack_bin"
 echo "compile_buildpack_dir: $compile_buildpack_dir"
+echo "CACHE_DIR: $CACHE_DIR"
 
 # ------------------------------------------------------------------------------------------------
 
@@ -53,6 +54,7 @@ curl -s --max-time 60 $compile_nginx_download |tar xz
 # ------------------------------------------------------------------------------------------------
 
 rm -rf $CACHE_DIR
+ls $compile_buildpack_bin
 cp $compile_buildpack_bin/boot.sh .
 
 # ------------------------------------------------------------------------------------------------
