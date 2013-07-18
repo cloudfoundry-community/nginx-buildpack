@@ -14,7 +14,7 @@
 # and  limitations under the License.
 # ------------------------------------------------------------------------------------------------
 
-if [ ! -f $1/index.html ]
+if [[ ! ( -f $1/index.html -o -f $1/index.htm -o -f $1/Default.htm ) ]]
 then
   echo "No" && exit 1
 else
