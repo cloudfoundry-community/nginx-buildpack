@@ -51,8 +51,8 @@ curl -s --max-time 60 $compile_nginx_download |tar xz
 [[ -f public/mime.types ]] && mv public/mime.types nginx/conf/mime.types
 
 # ------------------------------------------------------------------------------------------------
-
-ls $compile_buildpack_bin
+ls -lah
+ls -lah $compile_buildpack_bin
 cp $compile_buildpack_bin/boot.sh .
 
 # ------------------------------------------------------------------------------------------------
