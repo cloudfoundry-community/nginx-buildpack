@@ -47,12 +47,12 @@ mv * $compile_cache_dir/public
 mv $compile_cache_dir/public .
 [[ -f public/Procfile ]] && mv public/Procfile .
 curl -s --max-time 60 $compile_nginx_download |tar xz
+cp -rf $compile_buildpack_dir/nginx .
 [[ -f public/nginx.conf ]] && mv public/nginx.conf nginx/conf/nginx.conf
 [[ -f public/mime.types ]] && mv public/mime.types nginx/conf/mime.types
 
 # ------------------------------------------------------------------------------------------------
-ls -lah
-ls -lah $compile_buildpack_bin
 cp $compile_buildpack_bin/boot.sh .
+ls -lah
 
 # ------------------------------------------------------------------------------------------------
