@@ -29,11 +29,11 @@ compile_cache_dir=$2
 compile_buildpack_dir=$(cd $(dirname $0) && cd .. && pwd)
 compile_buildpack_bin=$compile_buildpack_dir/bin
 
-echo "pwd: $(pwd)"
-echo "compile_build_dir: $compile_build_dir"
-echo "compile_cache_dir: $compile_cache_dir"
-echo "compile_buildpack_bin: $compile_buildpack_bin"
-echo "compile_buildpack_dir: $compile_buildpack_dir"
+#echo "pwd: $(pwd)"
+#echo "compile_build_dir: $compile_build_dir"
+#echo "compile_cache_dir: $compile_cache_dir"
+#echo "compile_buildpack_bin: $compile_buildpack_bin"
+#echo "compile_buildpack_dir: $compile_buildpack_dir"
 
 # ------------------------------------------------------------------------------------------------
 
@@ -56,6 +56,6 @@ cp -f $compile_buildpack_dir/conf/mime.types nginx/conf/mime.types
 
 # ------------------------------------------------------------------------------------------------
 cp $compile_buildpack_bin/boot.sh .
-ls -lah
+#ls -lah
 
 # ------------------------------------------------------------------------------------------------
