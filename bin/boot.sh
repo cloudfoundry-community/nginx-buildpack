@@ -12,18 +12,19 @@
 # and  limitations under the License.
 # ------------------------------------------------------------------------------------------------
 
-conf_file=/app/nginx/conf/nginx.conf
-if [ -f /app/public/nginx.conf ]
+export APP_ROOT=/app/app
+conf_file=$APP_ROOT/nginx/conf/nginx.conf
+if [ -f $APP_ROOT/public/nginx.conf ]
 then
-  conf_file=/app/public/nginx.conf
+  conf_file=$APP_ROOT/public/nginx.conf
 fi
 
-mv $conf_file /app/nginx/conf/orig.conf
-erb /app/nginx/conf/orig.conf > /app/nginx/conf/nginx.conf
+mv $conf_file $APP_ROOT/nginx/conf/orig.conf
+erb $APP_ROOT/nginx/conf/orig.conf > $APP_ROOT/nginx/conf/nginx.conf
 
 # ------------------------------------------------------------------------------------------------
 
-(tail -f -n 0 /app/nginx/logs/*.log &)
-exec /app/nginx/sbin/nginx -p /app/nginx -c /app/nginx/conf/nginx.conf
+(tail -f -n 0 $APP_ROOT/nginx/logs/*.log &)
+exec $APP_ROOT/nginx/sbin/nginx -p $APP_ROOT/nginx -c $APP_ROOT/nginx/conf/nginx.conf
 
 # ------------------------------------------------------------------------------------------------
