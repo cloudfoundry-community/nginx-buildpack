@@ -12,7 +12,10 @@
 # and  limitations under the License.
 # ------------------------------------------------------------------------------------------------
 
-export APP_ROOT=/app/app
+# NB this is currently the default app root for Cloud Foundry (from home env var in env.log)
+# this may not be the best way to detect / decide on an application root, but it works
+export APP_ROOT=/home/vcap/app
+
 conf_file=$APP_ROOT/nginx/conf/nginx.conf
 if [ -f $APP_ROOT/public/nginx.conf ]
 then
