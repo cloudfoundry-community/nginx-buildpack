@@ -1,0 +1,7 @@
+name: simple-site
+instances: 1
+framework:
+  type: buildpack
+env:
+  BUILDPACK_URL: git://github.com/cloudfoundry-community/nginx-buildpack.git
+mem: 64
