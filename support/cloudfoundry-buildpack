@@ -18,14 +18,14 @@ buildpack_root=$PWD
 
 # ------------------------------------------------------------------------------------------------
 
-buildpack_pcre_version=8.32
+buildpack_pcre_version=8.33
 buildpack_pcre_url=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 buildpack_pcre_download=$buildpack_pcre_url/pcre-$buildpack_pcre_version.tar.gz
 
 # ------------------------------------------------------------------------------------------------
 
 buildpack_nginx_url=http://nginx.org/download
-buildpack_nginx_version=1.4.1
+buildpack_nginx_version=1.4.3
 buildpack_nginx_build_flags=(
   --with-http_gzip_static_module
   --with-http_realip_module
@@ -50,15 +50,6 @@ buildpack_nginx_build_flags=(
 buildpack_nginx_download=$buildpack_nginx_url/nginx-$buildpack_nginx_version.tar.gz
 
 # ------------------------------------------------------------------------------------------------
-# The build line that goes into -c of vulcan build
-# ------------------------------------------------------------------------------------------------
-
-buildpack_build_line=(
-  "rm -rf /app/nginx && mkdir /app/nginx &&"
-  "./configure ${buildpack_nginx_build_flags[*]} && make install"
-)
-
-# ------------------------------------------------------------------------------------------------
 
 function buildpack_exit()
 {
@@ -67,7 +58,7 @@ function buildpack_exit()
 }
 
 # ------------------------------------------------------------------------------------------------
-# $~: heroku-buildpack download
+# $~: cloudfoundry-buildpack download
 # ------------------------------------------------------------------------------------------------
 
 function buildpack_download()
@@ -84,23 +75,21 @@ function buildpack_download()
 }
 
 # ------------------------------------------------------------------------------------------------
-# $~: heroku-buildpack build
+# $~: cloudfoundry-buildpack build
 # ------------------------------------------------------------------------------------------------
 
 function buildpack_build()
 {
   nginx=$(basename ${buildpack_nginx_download%.tar.gz})
-  vulcan build -v \
-    -s $buildpack_root/sources/$nginx \
-    -p /app/nginx \
-    -c "${buildpack_build_line[*]}" || buildpack_exit "No"
+  cd $buildpack_root/sources/$nginx
   mkdir -p $buildpack_root/builds
-  mv /tmp/${nginx%.*}.tgz $buildpack_root/builds/$nginx.tar.gz
-  echo "You should probably run 'support/heroku-buildpack setup' to clean the build."
+  ./configure ${buildpack_nginx_build_flags[*]}
+  make install DESTDIR=$buildpack_root/builds/$nginx
+  echo "You should probably run 'support/cloudfoundry-buildpack setup' to clean the build."
 }
 
 # ------------------------------------------------------------------------------------------------
-# $~: heroku-buildpack setup
+# $~: cloudfoundry-buildpack setup
 # ------------------------------------------------------------------------------------------------
 
 function buildpack_setup()
@@ -109,9 +98,9 @@ function buildpack_setup()
   mkdir -p $buildpack_root/builds
   cd $buildpack_root/builds
 
-  [[ -f $nginx.tar.gz ]] || buildpack_exit "No" && mkdir -p $nginx
-
-  tar xmzvf $nginx.tar.gz -C $nginx
+  [[ -d $nginx ]] || buildpack_exit "No"
+  mv $nginx/app/nginx/* $nginx/
+  rm -rf $nginx/app
   chmod -R uog+rx $nginx/sbin
   rm -rf $nginx/html
   rm -rf $nginx/conf
@@ -122,7 +111,7 @@ function buildpack_setup()
 }
 
 # ------------------------------------------------------------------------------------------------
-# $~: heroku-buildpack cleanup
+# $~: cloudfoundry-buildpack cleanup
 # ------------------------------------------------------------------------------------------------
 
 function buildpack_cleanup()
@@ -132,13 +121,39 @@ function buildpack_cleanup()
 }
 
 # ------------------------------------------------------------------------------------------------
+# $~: cloudfoundry-buildpack dependencies
+# ------------------------------------------------------------------------------------------------
+
+function buildpack_dependencies()
+{
+  if type apt-get; then
+    sudo apt-get install zlib1g-dev libssl-dev \
+      --no-install-recommends --yes
+  fi
+}
+
+function buildpack_dependency_cleanup()
+{
+  if type apt-get; then
+    sudo apt-get autoremove --purge zlib1g-dev libssl-dev --yes
+  fi
+}
+
+# ------------------------------------------------------------------------------------------------
 
 case "$1" in
+  dependencies) buildpack_dependencies;;
   cleanup) buildpack_cleanup;;
   setup) buildpack_setup;;
   build) buildpack_build;;
   download) buildpack_download;;
-  run) buildpack_cleanup && buildpack_download && buildpack_build && buildpack_setup;;
+  run)
+    buildpack_dependencies && \
+    buildpack_cleanup && \
+    buildpack_download && \
+    buildpack_build && \
+    buildpack_setup && \
+    buildpack_dependency_cleanup;;
 esac
 
 # ------------------------------------------------------------------------------------------------
