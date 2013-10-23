@@ -18,14 +18,14 @@ buildpack_root=$PWD
 
 # ------------------------------------------------------------------------------------------------
 
-buildpack_pcre_version=8.32
+buildpack_pcre_version=8.33
 buildpack_pcre_url=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 buildpack_pcre_download=$buildpack_pcre_url/pcre-$buildpack_pcre_version.tar.gz
 
 # ------------------------------------------------------------------------------------------------
 
 buildpack_nginx_url=http://nginx.org/download
-buildpack_nginx_version=1.4.1
+buildpack_nginx_version=1.4.3
 buildpack_nginx_build_flags=(
   --with-http_gzip_static_module
   --with-http_realip_module
