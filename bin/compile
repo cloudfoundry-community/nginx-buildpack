@@ -54,7 +54,7 @@ cp -f $compile_buildpack_dir/conf/mime.types nginx/conf/mime.types
 [[ -f public/nginx.conf ]] && mv public/nginx.conf nginx/conf/nginx.conf
 [[ -f public/mime.types ]] && mv public/mime.types nginx/conf/mime.types
 
-echo "-----> Ensuring manifest.yml & stackato.yml aren't availble in public/"
+echo "-----> Ensuring manifest.yml & stackato.yml aren't available in public/"
 rm -f public/{manifest,stackato}.yml
 
 # ------------------------------------------------------------------------------------------------
