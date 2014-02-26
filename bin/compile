@@ -20,7 +20,7 @@ set -e
 
 # ------------------------------------------------------------------------------------------------
 
-compile_nginx_download=https://s3.amazonaws.com/ci-labs-buildpack-downloads/openresty/openresty-1.2.8.6.tar.gz
+compile_nginx_download=https://s3.amazonaws.com/ci-stackato-buildpack-wordpress/nginx-1.2.6.tar.gz
 
 # ------------------------------------------------------------------------------------------------
 
