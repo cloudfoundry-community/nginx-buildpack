@@ -50,53 +50,20 @@ http {
 
 ## Building the nginx package
 
-Vagrant was used for building nginx with the latest pcre (8.33 at time of writing)
+Startup the build-box by using [Vagrant](http://www.vagrantup.com):
 
 ```
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
-
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu-server-10.04"
-  config.vm.box_url = "http://files.vagrantup.com/lucid64.box"
-  config.vm.synced_folder "/your/home/dir", "/nginx"
-end
+vagrant up
 ```
 
-Build script
+Wait until vagrant finished the provisioning (defined by [provisioning-script](support/provisioning).
+
+Build nginx package:
 
 ```
-#!/bin/sh
-# http://jamie.curle.io/blog/compiling-nginx-ubuntu/
-
-pcre_version=8.33
-nginx_version=1.5.10
-
-apt-get install -fy build-essential zlib1g-dev
-
-mkdir ~/src
-cd ~/src
-
-wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$pcre_version.tar.gz
-tar -xzvf pcre-$pcre_version.tar.gz
-cd pcre-$pcre_version/
-./configure # /usr/local is the default so no need to prefix
-make
-make install
-ldconfig # this is important otherwise nginx will compile but fail to load
-
-cd ~/src
-wget http://nginx.org/download/nginx-$nginx_version.tar.gz
-tar -xvzf nginx-$nginx_version.tar.gz 
-cd nginx-$nginx_version
-./configure
-
-make 
-make install
-
-cd /usr/local
-sudo tar -zcvpf /nginx/nginx-$nginx_version.tar.gz nginx/
+vagrant ssh
+/vagrant/support/heroku-buildpack run
+mv builds /vagrant
 ```
+
+Upload the created nginx package from `builds/` to a public available space and change the URL of `compile_nginx_download` in `bin/compile`.
