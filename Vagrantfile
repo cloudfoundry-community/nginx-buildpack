@@ -8,4 +8,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "lucid64"
   config.vm.box_url = "http://files.vagrantup.com/lucid64.box"
   config.vm.network :private_network, type: :dhcp
+  config.vm.provision "shell", path: "support/provision"
 end
