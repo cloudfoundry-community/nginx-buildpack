@@ -20,7 +20,7 @@ set -e
 
 # ------------------------------------------------------------------------------------------------
 
-compile_nginx_download=https://dl.dropboxusercontent.com/u/5321751/download/nginx-buildpack/nginx-1.5.10.tar.gz
+compile_nginx_download=https://dl.dropboxusercontent.com/u/5321751/download/nginx-buildpack/nginx-1.4.5.tar.gz
 
 # ------------------------------------------------------------------------------------------------
 
