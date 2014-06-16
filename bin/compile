@@ -41,7 +41,7 @@ cd $compile_build_dir
 
 # ------------------------------------------------------------------------------------------------
 
-echo "-----> Doing work with $(basename ${compile_nginx_download%.tar.gz}) son."
+echo "-----> Doing work with $(basename ${compile_nginx_tgz%.tar.gz}) son."
 mkdir -p $compile_cache_dir/public
 mv * $compile_cache_dir/public
 mv $compile_cache_dir/public .
