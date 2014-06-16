@@ -20,10 +20,6 @@ set -e
 
 # ------------------------------------------------------------------------------------------------
 
-compile_nginx_download=https://dl.dropboxusercontent.com/u/5321751/download/nginx-buildpack/nginx-1.5.10.tar.gz
-
-# ------------------------------------------------------------------------------------------------
-
 compile_build_dir=$1
 compile_cache_dir=$2
 compile_buildpack_dir=$(cd $(dirname $0) && cd .. && pwd)
@@ -37,6 +33,10 @@ compile_buildpack_bin=$compile_buildpack_dir/bin
 
 # ------------------------------------------------------------------------------------------------
 
+compile_nginx_tgz="$compile_buildpack_dir/vendor/nginx-1.5.10.tar.gz"
+
+# ------------------------------------------------------------------------------------------------
+
 cd $compile_build_dir
 
 # ------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ mkdir -p $compile_cache_dir/public
 mv * $compile_cache_dir/public
 mv $compile_cache_dir/public .
 [[ -f public/Procfile ]] && mv public/Procfile .
-curl -s --max-time 60 $compile_nginx_download |tar xz
+tar xzf $compile_nginx_tgz
 
 cp -f $compile_buildpack_dir/conf/nginx.conf nginx/conf/nginx.conf
 cp -f $compile_buildpack_dir/conf/mime.types nginx/conf/mime.types
@@ -58,6 +58,7 @@ echo "-----> Ensuring manifest.yml & stackato.yml aren't available in public/"
 rm -f public/{manifest,stackato}.yml
 
 # ------------------------------------------------------------------------------------------------
+
 cp $compile_buildpack_bin/boot.sh .
 #ls -lah
 
