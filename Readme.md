@@ -1,3 +1,8 @@
+# DEPRECIATED
+This buildpack has been depreciated in favour of the more up to date (and better named) https://github.com/cloudfoundry-community/staticfile-buildpack.  Please use that instead.
+
+---
+
 # A buildpack for hosting static HTML websites on Cloud Foundry using Nginx
 
 
