@@ -3,7 +3,7 @@
 This buildpack has been depreciated in favour of the more up to date.
 Please use one of these instead:
 - **Staticfile Buildpack** [`https://github.com/cloudfoundry/staticfile-buildpack.git`](https://github.com/cloudfoundry/staticfile-buildpack) ([documentation](https://docs.cloudfoundry.org/buildpacks/staticfile/index.html))
-- **the new NGINX Buildpack** - if you require additional custom NGINX configuration - [`https://github.com/cloudfoundry/nginx-buildpack.git`](https://github.com/cloudfoundry/nginx-buildpack.git) ([documentation](https://docs.cloudfoundry.org/buildpacks/nginx/index.html))
+- **the new NGINX Buildpack** [`https://github.com/cloudfoundry/nginx-buildpack.git`](https://github.com/cloudfoundry/nginx-buildpack.git) ([documentation](https://docs.cloudfoundry.org/buildpacks/nginx/index.html)) - if you require additional custom NGINX configuration
 
 ---
 
